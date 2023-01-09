@@ -24,6 +24,68 @@ function updateNewsData() {
     return out;
 }
 
+function updateNews() {
+    d3.json('/news').then(function(data) {
+        ['#news1','#news2'].forEach(id => {
+            let articles = d3.select(id).selectAll('.articles')
+                .data(data.articles, d => d.url)
+        
+            articles.enter()
+                .append('div')
+                .attr('class', 'article')
+                .html(d => `<img id="news-image" src="${d.urlToImage}" onerror='this.src = "/static/img/news.png"'>
+                <p id="news-title">${d.title}</p>`)
+
+            articles.exit()
+                .remove()
+        })
+
+        
+        function waitForImages(ts) {
+            let images = [...document.querySelectorAll('.news img')]
+            let allImagesLoaded = images.map(x => x.complete).every(x => x)
+            console.log(images.map(x => x.complete).reduce((a,b) => a + b), images.length)
+            if (!allImagesLoaded) {
+                window.requestAnimationFrame(waitForImages)
+            }
+        }
+        window.requestAnimationFrame(waitForImages);
+    })
+    .then(function() {
+        let i = 0
+        function waitFrames() {
+            let n = 5
+            i++
+            if (i < n) {
+                window.requestAnimationFrame(waitFrames)
+            } else {
+                let newsHeight = document.querySelector('.news').scrollHeight
+                console.log(newsHeight)
+                document.querySelector(':root').style.setProperty('--news-height', `${-newsHeight}px`)
+                document.querySelector(':root').style.setProperty('--scroll-time', `${newsHeight/10}s`) // 10 pixels per second    
+            }
+        }
+        window.requestAnimationFrame(waitFrames)
+
+    })
+
+
+}
+
+let scrollValue = 0;
+
+function scrollNews() {
+    scrollValue--;
+    d3.selectAll('.news')
+        
+        .style('top', `${scrollValue}px`);
+    let newsHeight = document.querySelector('.news').clientHeight
+    if (-scrollValue >= newsHeight) {
+        scrollValue = 0
+        d3.selectAll('.news').style('top',0);
+    }
+}
+
 async function updateNewsDisplay() {
     if (articles.length > 0) {
         currentArticle = (currentArticle + 1) % articles.length;
@@ -183,10 +245,19 @@ function updateWeather() {
 
         let forecasts = d3.select('#forecast').selectAll('.forecast').data(data.daily)
 
+        let forecastMin = d3.min(data.daily, d => d.temp.min)
+        let forecastMax = d3.max(data.daily, d => d.temp.max)
+
+        let tempScale = d3.scaleLinear().domain([forecastMin, forecastMax]).range([320, 500])
+
         forecasts.enter().append('p')
             .attr('class', 'forecast')
             .merge(forecasts)
-            .html(d => `<span class='weekday'>${weekdays[new Date(d.dt*1000).getDay()]}</span> <span class='forecast-description'>${Math.round(d.temp.min)}° - ${Math.round(d.temp.max)}° ${d.weather[0].description}</span>`)
+            .html(d => `<span class='weekday'>${weekdays[new Date(d.dt*1000).getDay()]}</span> 
+                <span class='forecast-description'>${d.weather[0].description}</span> 
+                <span class='forecast-low' style='left:${tempScale(d.temp.min)}px'>${Math.round(d.temp.min)}°</span> 
+                <span style='position:absolute; left:${0.5 * (tempScale(d.temp.min) + tempScale(d.temp.max) + 30)}px'> - </span> 
+                <span class='forecast-high' style='left:${tempScale(d.temp.max)}px'>${Math.round(d.temp.max)}°</span>`)
             .append('img').attr('src', d => `http://openweathermap.org/img/wn/${d.weather[0].icon}.png`)
             .attr('width', '30px')
             .attr('height', '30px')
@@ -479,15 +550,24 @@ function updatePollen() {
     })
 }
 
+// setInterval(function() {
+//     let newsHeight = document.querySelector('.news').scrollHeight
+//     console.log(newsHeight)
+// }, 100)
+
 updateDateTime()
-updateNewsData().then(updateNewsDisplay)
+//updateNewsData().then(updateNewsDisplay)
 updateWeather()
 updateMilkyWay()
 updatePollen()
+updateNews()
+
+
 
 setInterval(updateDateTime, 1000);
-setInterval(updateNewsData, 15 * 60 * 1000)
+//setInterval(updateNewsData, 15 * 60 * 1000)
 setInterval(updateWeather, 5 * 60 * 1000)
-setInterval(updateNewsDisplay, 30 * 1000)
+//setInterval(updateNewsDisplay, 30 * 1000)
 setInterval(updateMilkyWay, 15 * 60 * 1000)
 setInterval(updatePollen, 15 * 60 * 1000)
+//setInterval(scrollNews, 80);

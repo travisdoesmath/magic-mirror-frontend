@@ -1,3 +1,8 @@
+:root {
+    --news-height: 0px;
+    --scroll-time: 0s;
+}
+
 body {
     font-family: Helvetica, Arial, sans-serif;
     background-color: black;
@@ -6,13 +11,14 @@ body {
     margin: 10px;
     font-size: 26px;
     position: absolute;
+    width: calc(100% - 20px);
 }
 
 #main {
-    height: 800px;
-    width: 480px;
+    height: 98vh;
+    /* width: 480px;
     max-height: 800px;
-    overflow: hidden;
+    overflow: hidden; */
     /* border: 1px dashed white; */
 }
 
@@ -53,13 +59,37 @@ h1 {
     font-size: 64px;
 }
 
-#news {
+#news-scroller {
     position: absolute;
-    top: 400px;
-    left: 700px;
+    top: 0px;
+    left: 940px;
     font-size:20px;
+    height: 100%;
+    overflow: hidden;
     /* opacity: 0; */
     /* transition: opacity 750ms ease-in-out; */
+}
+
+.news {
+    position: relative;
+    
+    animation-duration: var(--scroll-time);
+    /* animation-duration: 1s; */
+
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-name: news-scroll;
+}
+
+@keyframes news-scroll {
+    from {
+        top: 0px;
+    }
+
+    to {
+        top: var(--news-height);
+        /* top: -10px; */
+    }
 }
 
 /* #news.is-visible {
@@ -68,15 +98,22 @@ h1 {
 } 
 */
 
-#news img {
+.news img {
     /* width: 100%; */
-    /* float: left; */
-    max-height: 100px;
-    margin: 0 15px 15px 0;
+    float: right;
+    /* max-height: 100px; */
+    max-width: 150px;
+    margin-left: 15px;
 }
 
-#news>p {
+.news>p {
     margin-top:5px;
+}
+
+.news .article {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 #traffic {
@@ -94,7 +131,7 @@ h1 {
 #pollen {
     position: absolute;
     top: 400px;
-    left: 480px;
+    left: 736px;
     width: 200px;
     height: 250px;
 }
@@ -107,7 +144,7 @@ h1 {
 #weather {
     position: absolute;
     display: flex;
-    right: 0px;
+    left: 760px;
     top: 0px;
     height: 150px;
     width: 150px;
@@ -157,7 +194,7 @@ h1 {
 }
 
 #hourlyForecast {
-    height: 50px;
+    height: 120px;
     width: 940px;
     margin-bottom: 5px;
 }
@@ -172,8 +209,19 @@ h1 {
 
 .forecast-description {
     position: absolute;
-    left: 120px;
+    left: 110px;
 }
+
+.forecast-low {
+    position: absolute;
+    left: 320px;
+}
+
+.forecast-high {
+    position: absolute;
+    left: 400px;
+}
+
 
 p.forecast:last-child>span {
     background: -webkit-linear-gradient(rgba(255,255,255,100%), rgba(255,255,255,80%), rgba(0,0,0,0%));
@@ -187,6 +235,6 @@ p.forecast:last-child>span {
 
 .forecast>img {
     position: relative; 
-    left: 85px;
+    left: 55px;
     top: 2px;
 }

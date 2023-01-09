@@ -27,4 +27,4 @@ def pollen():
     return response.content
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
