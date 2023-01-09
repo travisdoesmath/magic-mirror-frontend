@@ -10,20 +10,6 @@ function updateDateTime() {
     timeBox.innerText = now.toLocaleTimeString('en-us', {hour: 'numeric', minute: '2-digit'});
 }
 
-function updateNewsData() {
-    return new Promise((resolve, reject) => {
-        d3.json('/news').then(function(data) {
-            console.log(data)
-
-            articles = data.articles;
-            resolve(1);
-        })
-
-    })
-    let out = new Promise()
-    return out;
-}
-
 function updateNews() {
     d3.json('/news').then(function(data) {
         ['#news1','#news2'].forEach(id => {
@@ -33,122 +19,17 @@ function updateNews() {
             articles.enter()
                 .append('div')
                 .attr('class', 'article')
-                .html(d => `<img id="news-image" src="${d.urlToImage}" onerror='this.src = "/static/img/news.png"'>
-                <p id="news-title">${d.title}</p>`)
+                .html(d => `<p id="news-title">${d.title}</p>`)
 
             articles.exit()
                 .remove()
         })
-
-        
-        function waitForImages(ts) {
-            let images = [...document.querySelectorAll('.news img')]
-            let allImagesLoaded = images.map(x => x.complete).every(x => x)
-            console.log(images.map(x => x.complete).reduce((a,b) => a + b), images.length)
-            if (!allImagesLoaded) {
-                window.requestAnimationFrame(waitForImages)
-            }
-        }
-        window.requestAnimationFrame(waitForImages);
     })
-    .then(function() {
-        let i = 0
-        function waitFrames() {
-            let n = 5
-            i++
-            if (i < n) {
-                window.requestAnimationFrame(waitFrames)
-            } else {
-                let newsHeight = document.querySelector('.news').scrollHeight
-                console.log(newsHeight)
-                document.querySelector(':root').style.setProperty('--news-height', `${-newsHeight}px`)
-                document.querySelector(':root').style.setProperty('--scroll-time', `${newsHeight/10}s`) // 10 pixels per second    
-            }
-        }
-        window.requestAnimationFrame(waitFrames)
-
+    .then(function scrollNews() {
+        let newsHeight = document.querySelector('.news').scrollHeight
+        document.querySelector(':root').style.setProperty('--news-height', `${-newsHeight}px`)
+        document.querySelector(':root').style.setProperty('--scroll-time', `${newsHeight/10}s`) // 10 pixels per second    
     })
-
-
-}
-
-let scrollValue = 0;
-
-function scrollNews() {
-    scrollValue--;
-    d3.selectAll('.news')
-        
-        .style('top', `${scrollValue}px`);
-    let newsHeight = document.querySelector('.news').clientHeight
-    if (-scrollValue >= newsHeight) {
-        scrollValue = 0
-        d3.selectAll('.news').style('top',0);
-    }
-}
-
-async function updateNewsDisplay() {
-    if (articles.length > 0) {
-        currentArticle = (currentArticle + 1) % articles.length;
-        d = articles[currentArticle];
-
-        var img = new Image();
-        img.src = d.urlToImage;
-
-        // get new image in background
-        // fade out current story
-        // after fade completed, change text
-        // after fade completed, text changed, and image finishes loading, then fade back in.
-
-        let news = document.querySelector('#news')
-
-        news.style.opacity = 0;
-        function fadeOut() {
-            return new Promise((resolve, reject) => {
-                let anim = news.animate([{opacity: 1}, {opacity: 0}], {duration: 750})
-                anim.onfinish = () => resolve(1);
-            })
-        }
-
-        function fadeIn() {
-            return new Promise((resolve, reject) => {
-                let anim = news.animate([{opacity: 0}, {opacity: 1}], {duration: 750})
-                anim.onfinish = () => resolve(1);
-            })
-        }
-
-        function loadImage(url, elem) {
-            return new Promise((resolve, reject) => {
-                elem.onload = () => resolve(elem);
-                elem.onerror = reject;
-                elem.src = url;
-            });
-        }
-
-        fadeOut().then(() => {
-            newsImg = document.querySelector('#news>img')
-            document.querySelector('#news>p').innerText = d.title;
-            return loadImage(d.urlToImage, newsImg)
-        }).catch(() => {
-            newsImg = document.querySelector('#news>img')
-            return loadImage('/static/img/news.png', newsImg)
-        }).then(() => {
-            news.style.opacity = 1;
-            return fadeIn;
-        })
-
-        // fadeOut.finished.then(() => {
-        //     newsImg = document.querySelector('#news>img')
-        //     document.querySelector('#news>p').innerText = d.title;
-        //     return loadImage(d.urlToImage, newsImg)
-        // }).catch(() => {
-        //     newsImg = document.querySelector('#news>img')
-        //     return loadImage('/static/img/news.png', newsImg)
-        // }).then(() => {
-        //     news.style.opacity = 1;
-        //     let fadeIn = news.animate([{opacity: 0}, {opacity: 1}], {duration: 750})
-        //     return fadeIn.finished;
-        // })
-    }
 }
 
 function updateWeather() {
@@ -550,24 +431,13 @@ function updatePollen() {
     })
 }
 
-// setInterval(function() {
-//     let newsHeight = document.querySelector('.news').scrollHeight
-//     console.log(newsHeight)
-// }, 100)
-
 updateDateTime()
-//updateNewsData().then(updateNewsDisplay)
 updateWeather()
 updateMilkyWay()
 updatePollen()
 updateNews()
 
-
-
 setInterval(updateDateTime, 1000);
-//setInterval(updateNewsData, 15 * 60 * 1000)
 setInterval(updateWeather, 5 * 60 * 1000)
-//setInterval(updateNewsDisplay, 30 * 1000)
 setInterval(updateMilkyWay, 15 * 60 * 1000)
 setInterval(updatePollen, 15 * 60 * 1000)
-//setInterval(scrollNews, 80);
