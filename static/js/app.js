@@ -25,11 +25,26 @@ function updateNews() {
                 .remove()
         })
     })
-    .then(function scrollNews() {
-        let newsHeight = document.querySelector('.news').scrollHeight
-        document.querySelector(':root').style.setProperty('--news-height', `${-newsHeight}px`)
-        document.querySelector(':root').style.setProperty('--scroll-time', `${newsHeight/10}s`) // 10 pixels per second    
-    })
+    // .then(function scrollNews() {
+    //     let newsHeight = document.querySelector('.news').scrollHeight
+    //     document.querySelector(':root').style.setProperty('--news-height', `${-newsHeight}px`)
+    //     document.querySelector(':root').style.setProperty('--scroll-time', `${newsHeight/10}s`) // 10 pixels per second    
+    // })
+}
+
+function scrollNews() {
+    let firstArticleHeight = document.querySelector('#news1').firstChild.scrollHeight
+
+    d3.select('#news1')
+        .transition()
+        .duration(10*(firstArticleHeight+30))
+        .style('top', `${-firstArticleHeight-30}px`)
+        .on('end', () => {
+            let articles = document.querySelector('#news1')
+            articles.append(articles.firstChild)
+            articles.style.top = '0px'
+        })
+
 }
 
 function updateWeather() {
@@ -441,3 +456,4 @@ setInterval(updateDateTime, 1000);
 setInterval(updateWeather, 5 * 60 * 1000)
 setInterval(updateMilkyWay, 15 * 60 * 1000)
 setInterval(updatePollen, 15 * 60 * 1000)
+setInterval(scrollNews, 10 * 1000)
