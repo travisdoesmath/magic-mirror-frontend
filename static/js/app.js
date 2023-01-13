@@ -13,7 +13,8 @@ function updateDateTime() {
 let scrollStarted = false;
 
 function updateNews() {
-    let scrollSpeed = 100 // pixels per second
+    let scrollSpeed = 400 // pixels per second
+    let delayTime = 1500
 
     function scrollNews() {
         //let firstArticleWidth = document.querySelector('#news').firstChild.scrollWidth
@@ -21,8 +22,9 @@ function updateNews() {
     
         d3.select('#news')
             .transition()
+            .delay(delayTime)
             .duration((articleWidth) * 1000 / scrollSpeed)
-            .ease(d3.easeLinear)
+            //.ease(d3.easeLinear)
             .style('left', `${-articleWidth}px`)
             .on('end', () => {
                 let articles = document.querySelector('#news')
