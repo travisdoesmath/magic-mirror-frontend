@@ -12,18 +12,19 @@ function updateDateTime() {
 
 function updateNews() {
     d3.json('/news').then(function(data) {
-        ['#news1','#news2'].forEach(id => {
-            let articles = d3.select(id).selectAll('.articles')
-                .data(data.articles, d => d.url)
+        console.log('news', data)
         
-            articles.enter()
-                .append('div')
-                .attr('class', 'article')
-                .html(d => `<p id="news-title">${d.title}</p>`)
+        let articles = d3.select('#news').selectAll('.article')
+            .data(data.articles, d => d.url)
+    
+        articles.enter()
+            .append('div')
+            .attr('class', 'article')
+            .merge(articles)
+            .html(d => `<p id="news-title">${d.title}</p>`)
 
-            articles.exit()
-                .remove()
-        })
+        articles.exit()
+            .remove()
     })
     // .then(function scrollNews() {
     //     let newsHeight = document.querySelector('.news').scrollHeight
@@ -33,14 +34,14 @@ function updateNews() {
 }
 
 function scrollNews() {
-    let firstArticleHeight = document.querySelector('#news1').firstChild.scrollHeight
+    let firstArticleHeight = document.querySelector('#news').firstChild.scrollHeight
 
-    d3.select('#news1')
+    d3.select('#news')
         .transition()
         .duration(10*(firstArticleHeight+30))
         .style('top', `${-firstArticleHeight-30}px`)
         .on('end', () => {
-            let articles = document.querySelector('#news1')
+            let articles = document.querySelector('#news')
             articles.append(articles.firstChild)
             articles.style.top = '0px'
         })
@@ -456,4 +457,5 @@ setInterval(updateDateTime, 1000);
 setInterval(updateWeather, 5 * 60 * 1000)
 setInterval(updateMilkyWay, 15 * 60 * 1000)
 setInterval(updatePollen, 15 * 60 * 1000)
+setInterval(updateNews, 60 * 60 * 1000)
 setInterval(scrollNews, 10 * 1000)
