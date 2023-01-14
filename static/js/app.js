@@ -462,7 +462,6 @@ updateWeather()
 updateMilkyWay()
 updatePollen()
 updateNews()
-scrollNews()
 
 setInterval(updateDateTime, 1000);
 setInterval(updateWeather, 5 * 60 * 1000)
