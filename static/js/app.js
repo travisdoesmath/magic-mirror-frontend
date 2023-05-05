@@ -97,7 +97,7 @@ function updateWeather() {
         d3.select('#current-description').append('span').text(data.current.weather[0].description)
         d3.select('#current-description').append('img').attr('src', `http://openweathermap.org/img/wn/${data.current.weather[0].icon}.png`)
         
-        d3.select('#current').select("#humidity").text(`humidity: ${data.current.humidity}%`)
+        d3.select('#current').select("#humidity").text(`${data.current.humidity}%`)
 
         let precipColor = x => {
             if (x == 0) return "#444444";

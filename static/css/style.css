@@ -36,17 +36,17 @@ h1 {
 #sunrise-sunset {
     position: relative;
     top: -16px;
-    font-size: 24px;
+    font-size: 36px;
 }
 
 #sunrise-sunset > img {
     position: relative;
-    top: 14px;
+    top: 10px;
 }
 
 #sunrise-sunset > svg {
     position: relative;
-    top: 7px;
+    top: 2px;
     margin-left: 12px;
 }
 
@@ -155,16 +155,23 @@ h1 {
 
 #current-description {
     display: flex;
-    font-size: 24px;
+    font-size: 48px;
     justify-content: center;
     align-items: center;
+    margin-top: 70px;
+}
+
+#current-description img {
+    width: 100px;
+    height: 100px;
 }
 
 #humidity {
-    font-size:24px;
+    font-size:76px;
     color: #FFF;
     display: flex;
     justify-content: center;
+    color: #ACF;
 }
 
 #forecast {
