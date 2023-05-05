@@ -62,6 +62,26 @@ function updateWeather() {
     d3.json('/weather').then(function(data) {
         console.log(data)
 
+        let tempColor = d3.scaleQuantize()
+        .domain([-10,110])
+        .range([
+            '#808',
+            '#407',
+            '#227',
+            '#15a',
+            '#07b',
+            '#158',
+            '#044',
+            '#075',
+            '#590',
+            '#b90',
+            '#c60',
+            '#b30',
+            '#700',
+            '#400'
+
+        ])
+
         var sunrise = new Date(data.current.sunrise*1000).toLocaleTimeString('en-us', {hour: 'numeric', minute: '2-digit'});
         var sunset = new Date(data.current.sunset*1000).toLocaleTimeString('en-us', {hour: 'numeric', minute: '2-digit'});
 
@@ -89,7 +109,7 @@ function updateWeather() {
             .attr('transform', `translate(${0.5*moonDiameter},${0.5*moonDiameter})`)
             .attr('fill', '#222')
 
-        d3.select('#current-temperature').text(`${Math.round(data.current.temp)}°`)
+        d3.select('#current-temperature').text(`${Math.round(data.current.temp)}°`).style('color', tempColor(data.current.temp))
         // d3.select('#current-feels-like').text(`feels like ${Math.round(data.current.feels_like)}°`)
 
         
@@ -123,25 +143,7 @@ function updateWeather() {
             .style('fill', d => d.color)
             .attr('transform', 'translate(150,150)')
 
-        let tempColor = d3.scaleQuantize()
-            .domain([-10,110])
-            .range([
-                '#808',
-                '#407',
-                '#227',
-                '#15a',
-                '#07b',
-                '#158',
-                '#044',
-                '#075',
-                '#590',
-                '#b90',
-                '#c60',
-                '#b30',
-                '#700',
-                '#400'
 
-            ])
 
         d3.select('#hourlyForecast').selectAll('.temp').remove()
 
