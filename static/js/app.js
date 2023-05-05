@@ -14,7 +14,7 @@ let scrollStarted = false;
 
 function updateNews() {
     let transitionTime = 500
-    let delayTime = 3000
+    let delayTime = 10000
 
     function scrollNews() {
         //let firstArticleWidth = document.querySelector('#news').firstChild.scrollWidth
@@ -90,13 +90,14 @@ function updateWeather() {
             .attr('fill', '#222')
 
         d3.select('#current-temperature').text(`${Math.round(data.current.temp)}°`)
-        d3.select('#current-feels-like').text(`${Math.round(data.current.feels_like)}°`)
+        // d3.select('#current-feels-like').text(`feels like ${Math.round(data.current.feels_like)}°`)
 
-        d3.select('#current').select('#current-other').select("img")
-            .attr('src', `http://openweathermap.org/img/wn/${data.current.weather[0].icon}.png`)
-
-        d3.select('#current').select('#current-other').select("#humidity")
-            .text(`${data.current.humidity}%`)
+        
+        d3.select('#current-description').html('') 
+        d3.select('#current-description').append('span').text(data.current.weather[0].description)
+        d3.select('#current-description').append('img').attr('src', `http://openweathermap.org/img/wn/${data.current.weather[0].icon}.png`)
+        
+        d3.select('#current').select("#humidity").text(`humidity: ${data.current.humidity}%`)
 
         let precipColor = x => {
             if (x == 0) return "#444444";
@@ -111,8 +112,8 @@ function updateWeather() {
         let minuteForecast = d3.select('#minute-forecast').selectAll('.arc').data(minuteData, (d, i) => i)
 
         let arc = d3.arc()
-            .innerRadius(65)
-            .outerRadius(75)
+            .innerRadius(130)
+            .outerRadius(150)
 
         minuteForecast.enter()
             .append('path')
@@ -120,7 +121,7 @@ function updateWeather() {
             .attr('d', arc)
             .merge(minuteForecast)
             .style('fill', d => d.color)
-            .attr('transform', 'translate(75,75)')
+            .attr('transform', 'translate(150,150)')
 
         let tempColor = d3.scaleQuantize()
             .domain([-10,110])
@@ -155,19 +156,38 @@ function updateWeather() {
         let forecastMin = d3.min(data.daily, d => d.temp.min)
         let forecastMax = d3.max(data.daily, d => d.temp.max)
 
-        let tempScale = d3.scaleLinear().domain([forecastMin, forecastMax]).range([320, 500])
+        let tempScale = d3.scaleLinear().domain([forecastMin, forecastMax]).range([470, 770])
 
         forecasts.enter().append('p')
             .attr('class', 'forecast')
             .merge(forecasts)
-            .html(d => `<span class='weekday'>${weekdays[new Date(d.dt*1000).getDay()]}</span> 
+            .html((d, i) => {
+                const tempWidth = 54;
+                let minTempPosition = tempScale(d.temp.min);
+                let maxTempPosition = tempScale(d.temp.max);
+                if (maxTempPosition - minTempPosition < 50) {
+                    console.log(minTempPosition, maxTempPosition)
+                    const overlap = minTempPosition - maxTempPosition;
+                    minTempPosition -= overlap/2;
+                    maxTempPosition += overlap/2;
+                }
+                const svgWidth = maxTempPosition - minTempPosition - tempWidth - 9;
+                return `<span class='weekday'>${weekdays[new Date(d.dt*1000).getDay()]}</span> 
                 <span class='forecast-description'>${d.weather[0].description}</span> 
-                <span class='forecast-low' style='left:${tempScale(d.temp.min)}px'>${Math.round(d.temp.min)}°</span> 
-                <span style='position:absolute; left:${0.5 * (tempScale(d.temp.min) + tempScale(d.temp.max) + 30)}px'> - </span> 
-                <span class='forecast-high' style='left:${tempScale(d.temp.max)}px'>${Math.round(d.temp.max)}°</span>`)
+                <span class='forecast-low' style='left:${tempScale(d.temp.min)}px; background:${tempColor(d.temp.min)}'>${Math.round(d.temp.min)}°</span> 
+                <svg style='left:${minTempPosition + tempWidth + 9}px; width: ${svgWidth}px'>
+                    <defs>
+                        <linearGradient id="linear${i}" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="${tempColor(d.temp.min)}" />
+                        <stop offset="100%" stop-color="${tempColor(d.temp.max)}" />
+                    </defs>
+                    <rect x="0" y="17.5" width="${svgWidth}" height="5" fill="url(#linear${i})">
+                </svg>
+                <span class='forecast-high' style='left:${tempScale(d.temp.max)}px; background:${tempColor(d.temp.max)}''>${Math.round(d.temp.max)}°</span>`
+            })
             .append('img').attr('src', d => `http://openweathermap.org/img/wn/${d.weather[0].icon}.png`)
-            .attr('width', '30px')
-            .attr('height', '30px')
+            .attr('width', '50px')
+            .attr('height', '50px')
         
         forecasts.exit().remove();
 
@@ -409,12 +429,12 @@ function updatePollen() {
         console.log('pollen data', data)
         data = data.data;
 
-        let width = 350
-        let height = 250
+        let width = 500
+        let height = 500
 
-        let x = d3.scaleLinear()
-            .domain([0, 1000])
-            .range([0, width])
+        // let x = d3.scaleLinear()
+        //     .domain([0,  00])
+        //     .range([0, width])
 
         let y = d3.scaleBand()
             .range([0, height])
@@ -426,12 +446,12 @@ function updatePollen() {
         let g = d3.select('#pollen').data([0]).append('g')
             .attr('width', width)
             .attr('height', height)
-            .attr('transform', 'translate(120,0)')
+            .attr('transform', 'translate(180,0)')
 
         let pollenBarChart = g.selectAll('.bar').data(data)
 
         g.append("g")
-            .style('font-size', '18px')
+            .style('font-size', '30px')
             .call(d3.axisLeft(y).tickSize(0).tickPadding(10))
             .call(g => g.select(".domain").remove())
             
@@ -439,20 +459,21 @@ function updatePollen() {
             .append('rect')
             .classed('bar', true)
             .merge(pollenBarChart)
-            .attr('x', x(0))
+            .attr('x', 0)
             .attr('y', d => y(d.factor))
             // .attr('width', d => x(d.value))
-            .attr('width', d => 55)
+            .attr('width', d => 250)
             .attr('height', y.bandwidth())
             .attr('fill', d => d.fillColor)
         
         pollenBarChart.enter()
             .append('text')
             .text(d => d.value)
-            .attr('x', x(0)+5)
-            .attr('y', d => y(d.factor) + 25)
+            .attr('x', 5)
+            .attr('y', d => y(d.factor) + y.bandwidth() - 7.5)
             .attr('fill', d => d3.color(d.fillColor).darker(2))
             .style('font-weight', 600)
+            .style('font-size', y.bandwidth())
         
     })
 }

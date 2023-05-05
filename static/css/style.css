@@ -4,7 +4,7 @@ body {
     color: white;
     padding: 0;
     margin: 10px;
-    font-size: 26px;
+    font-size: 35px;
     position: absolute;
     width: calc(100% - 20px);
 }
@@ -102,66 +102,74 @@ h1 {
 
 #pollen {
     position: absolute;
-    top: 400px;
-    left: 736px;
-    width: 200px;
-    height: 250px;
+    top: 0px;
+    right: 0px;
+    width: 300px;
+    height: 500px;
 }
 
 #milky-way {
     position: absolute;
-    top: 170px;
+    top: 0px;
+    left: 500px;
 }
 
 #weather {
     position: absolute;
     display: flex;
-    left: 760px;
-    top: 0px;
-    height: 150px;
-    width: 150px;
+    left: 0px;
+    top: 200px;
+    height: 300px;
+    width: 300px;
     align-items: center;
     justify-content: center;
 }
 
 #minute-forecast {
     position: absolute;
-    right: 0;
+    left: 0;
     top: 0;
-    width: 150px;
-    height: 150px;
+    width: 300px;
+    height: 300px;
+}
+
+#current {
+    margin: 0;
+    top: 60px;
+    position: absolute;
 }
 
 #current-temperature {
-    font-size: 46px;
-    position: absolute;
-    top: 24px;
-    left: 48px;
+    font-size: 76px;
+    display: flex;
+    justify-content: center;
 }
 
-#current-feels-like {
-    font-size: 17px;
-    position: absolute;
-    top: 62px;
-    left: 63px;
-}
+/* #current-feels-like {
+    font-size: 18px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+} */
 
-#current-other {
-    position: absolute;
-    bottom: 10px;
-    left:20px;
+#current-description {
+    display: flex;
+    font-size: 24px;
+    justify-content: center;
+    align-items: center;
 }
 
 #humidity {
-    position: absolute;
-    bottom: 17px;
     font-size:24px;
     color: #FFF;
+    display: flex;
+    justify-content: center;
 }
 
 #forecast {
     position:absolute;
-    top: 280px;
+    top: 100px;
+    left: 500px;
     width: 100%;
 }
 
@@ -181,24 +189,28 @@ h1 {
 
 .forecast-description {
     position: absolute;
-    left: 110px;
+    left: 130px;
 }
 
 .forecast-low {
     position: absolute;
-    left: 320px;
+    left: 400px;
+    padding: 0 5px;
+    color: black;
+    border-radius: 10px;
 }
 
 .forecast-high {
     position: absolute;
-    left: 400px;
+    left: 480px;
+    padding: 0 5px;
+    color: black;
+    border-radius: 10px;
 }
 
-
-p.forecast:last-child>span {
-    background: -webkit-linear-gradient(rgba(255,255,255,100%), rgba(255,255,255,80%), rgba(0,0,0,0%));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.forecast svg {
+    height: 50px;
+    position: absolute;
 }
 
 .weekday {
@@ -207,6 +219,6 @@ p.forecast:last-child>span {
 
 .forecast>img {
     position: relative; 
-    left: 55px;
+    left: 75px;
     top: 2px;
 }
