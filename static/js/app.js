@@ -471,11 +471,11 @@ function updatePollen() {
         pollenBarChart.enter()
             .append('text')
             .text(d => d.value)
-            .attr('x', 5)
-            .attr('y', d => y(d.factor) + y.bandwidth() - 7.5)
+            .attr('x', 10)
+            .attr('y', d => y(d.factor) + y.bandwidth()/2 + 20)
             .attr('fill', d => d3.color(d.fillColor).darker(2))
             .style('font-weight', 600)
-            .style('font-size', y.bandwidth())
+            .style('font-size', '60px')
         
     })
 }
