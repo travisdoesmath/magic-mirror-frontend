@@ -152,6 +152,7 @@ function updateWeather() {
         hourlyForecast.enter().append('div')
             .attr('class', 'temp')
             .style('background-color', d => tempColor(d.temp))
+            
 
         let forecasts = d3.select('#forecast').selectAll('.forecast').data(data.daily)
 
@@ -176,7 +177,7 @@ function updateWeather() {
                 const svgWidth = maxTempPosition - minTempPosition - tempWidth - 9;
                 return `<span class='weekday'>${weekdays[new Date(d.dt*1000).getDay()]}</span> 
                 <span class='forecast-description'>${d.weather[0].description}</span> 
-                <span class='forecast-low' style='left:${tempScale(d.temp.min)}px; background:${tempColor(d.temp.min)}'>${Math.round(d.temp.min)}°</span> 
+                <span class='forecast-low' style='left:${tempScale(d.temp.min)}px; background:${tempColor(d.temp.min)}; background:${tempColor(d.temp.min)}; color:${d.temp.min < 90 ? '#000' : '#FC7'}'>${Math.round(d.temp.min)}°</span> 
                 <svg style='left:${minTempPosition + tempWidth + 9}px; width: ${svgWidth}px'>
                     <defs>
                         <linearGradient id="linear${i}" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -185,7 +186,7 @@ function updateWeather() {
                     </defs>
                     <rect x="0" y="17.5" width="${svgWidth}" height="5" fill="url(#linear${i})">
                 </svg>
-                <span class='forecast-high' style='left:${tempScale(d.temp.max)}px; background:${tempColor(d.temp.max)}''>${Math.round(d.temp.max)}°</span>`
+                <span class='forecast-high' style='left:${tempScale(d.temp.max)}px; background:${tempColor(d.temp.max)}; color:${d.temp.max < 90 ? '#000' : '#FC7'}'>${Math.round(d.temp.max)}°</span>`
             })
             .append('img').attr('src', d => `http://openweathermap.org/img/wn/${d.weather[0].icon}.png`)
             .attr('width', '50px')
