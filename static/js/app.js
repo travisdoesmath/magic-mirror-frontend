@@ -109,7 +109,7 @@ function updateWeather() {
             .attr('transform', `translate(${0.5*moonDiameter},${0.5*moonDiameter})`)
             .attr('fill', '#222')
 
-        d3.select('#current-temperature').text(`${Math.round(data.current.temp)}°`).style('color', tempColor(data.current.temp))
+        d3.select('#current-temperature').text(`${Math.round(data.current.temp)}°`).style('color', data.current.temp < 100 ? tempColor(data.current.temp) : '#FC7')
         // d3.select('#current-feels-like').text(`feels like ${Math.round(data.current.feels_like)}°`)
 
         
