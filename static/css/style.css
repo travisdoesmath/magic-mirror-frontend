@@ -118,12 +118,16 @@ h1 {
 #weather {
     position: absolute;
     display: flex;
-    left: 0px;
+    left: 80px;
     top: 200px;
     height: 300px;
     width: 300px;
     align-items: center;
     justify-content: center;
+}
+
+.alert {
+    font-size: 14px;
 }
 
 #minute-forecast {
@@ -154,14 +158,17 @@ h1 {
 } */
 
 #current-description {
-    display: flex;
     font-size: 48px;
-    justify-content: center;
-    align-items: center;
     margin-top: 70px;
 }
 
-#current-description img {
+#current-description>div {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#current-description>div>img {
     width: 100px;
     height: 100px;
 }

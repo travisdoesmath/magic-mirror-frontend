@@ -110,12 +110,14 @@ function updateWeather() {
             .attr('fill', '#222')
 
         d3.select('#current-temperature').text(`${Math.round(data.current.temp)}°`).style('color', data.current.temp < 100 ? tempColor(data.current.temp) : '#FC7')
-        // d3.select('#current-feels-like').text(`feels like ${Math.round(data.current.feels_like)}°`)
+        //d3.select('#current-feels-like').text(`feels like ${Math.round(data.current.feels_like)}°`)
 
         
         d3.select('#current-description').html('') 
-        d3.select('#current-description').append('span').text(data.current.weather[0].description)
-        d3.select('#current-description').append('img').attr('src', `http://openweathermap.org/img/wn/${data.current.weather[0].icon}.png`)
+        let currentWeatherDescription = d3.select('#current-description').append('div')
+        currentWeatherDescription.append('span').text(data.current.weather[0].description)
+        currentWeatherDescription.append('img').attr('src', `http://openweathermap.org/img/wn/${data.current.weather[0].icon}.png`)
+        d3.select('#current-description').append('div').text(`feels like: ${Math.round(data.current.feels_like)}°`).style('color', data.current.temp < 100 ? tempColor(data.current.temp) : '#FC7')
         
         d3.select('#current').select("#humidity").text(`${data.current.humidity}%`)
 
