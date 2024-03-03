@@ -61,26 +61,74 @@ function updateNews() {
 function updateWeather() {
     d3.json('/weather').then(function(data) {
         console.log(data)
+        // let tempColors = [
+        //     '#808',
+        //     '#407',
+        //     '#227',
+        //     '#15a',
+        //     '#07b',
+        //     '#158',
+        //     '#066',
+        //     '#075',
+        //     '#590',
+        //     '#b90',
+        //     '#c60',
+        //     '#b30',
+        //     '#a00',
+        //     '#800'
+
+        // ]
+
+        let tempColors = [
+            'hsl(300,100%,30%)', // -10 to 0
+            'hsl(280,100%,50%)', // 1 to 10
+            'hsl(260,100%,60%)', // 11 to 20
+            'hsl(240,80%,60%)', // 21 to 30
+            'hsl(210,90%,50%)', // 31 to 40
+            'hsl(190,100%,40%)', // 41 to 50
+            'hsl(140,80%,40%)', // 51 to 60
+            'hsl(110,100%,40%)', // 61 to 70
+            'hsl(80,100%,40%)', // 71 to 80
+            'hsl(50,100%,40%)', // 81 to 90
+            'hsl(30,100%,40%)', // 91 to 100
+            'hsl(20,100%,40%)', // 101 to 110
+            'hsl(10,100%,35%)', // 111 to 120
+            'hsl(0,100%,30%)', // 121+
+        ]
+
 
         let tempColor = d3.scaleQuantize()
         .domain([-10,110])
-        .range([
-            '#808',
-            '#407',
-            '#227',
-            '#15a',
-            '#07b',
-            '#158',
-            '#044',
-            '#075',
-            '#590',
-            '#b90',
-            '#c60',
-            '#b30',
-            '#a00',
-            '#800'
+        .range(tempColors)
 
-        ])
+        let testColors = false;
+
+        if (testColors) {
+            let colorTest = d3.select('body').append('svg')
+                .style('position', 'fixed')
+                .style('top', 0)
+                .style('left', 0)
+                .style('height', '1000px')
+                .selectAll('rect').data(tempColors)
+
+            colorTest.enter()
+                .append('rect')
+                .attr('x', 0)
+                .attr('y', (d, i) => `${i * 50}px`)
+                .attr('width', '100px')
+                .attr('height', '50px')
+                .attr('fill', d => d)
+
+            
+            colorTest.enter()
+                .append('text')
+                .attr('x', 10)
+                .attr('y', (d, i) => `${i * 50 + 40}px`)
+                .style('font', 'Helvetica 35px')
+                .style('fill', 'black')
+                .text((d, i) => i*10-10)
+            
+        }
 
         var sunrise = new Date(data.current.sunrise*1000).toLocaleTimeString('en-us', {hour: 'numeric', minute: '2-digit'});
         var sunset = new Date(data.current.sunset*1000).toLocaleTimeString('en-us', {hour: 'numeric', minute: '2-digit'});
