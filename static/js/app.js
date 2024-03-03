@@ -37,9 +37,9 @@ function updateNews() {
 
     d3.json('/news').then(function(data) {
         console.log('news', data)
-        
+
         let articles = d3.select('#news').selectAll('.article')
-            .data(data.articles, d => d.url)
+            .data(data.articles.filter(x => x.content !== "[Removed]"), d => d.url)
     
         articles.enter()
             .append('div')
